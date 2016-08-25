@@ -26,7 +26,7 @@ public class Start {
 					Configuracion();
 					break;
 				case 3:
-					MainPro.logs.PrintLogs();
+					Reportes();
 					break;
 				case 4:
 					Perfil();
