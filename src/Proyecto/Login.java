@@ -3,15 +3,17 @@ import java.util.Scanner;
 
 public class Login {
 	Scanner scan = new Scanner(System.in);
+	Usus arrUsuarios[];
 	String usuIngr, passIngr, nuevoUsu, nuevoCont, nuevoCont2;
-	Usus usu1 = new Usus("null", "null", 0, "no");
-	Usus usu2 = new Usus("null", "null", 0, "no");
-	Usus usu3 = new Usus("null", "null", 0, "no");
-	Usus usu4 = new Usus("null", "null", 0, "no");
-	Usus usu5 = new Usus("null", "null", 0, "no");
 	
-	Usus arrUsuarios[] = {usu1, usu2, usu3, usu4, usu5};
-			
+	
+	public void Array(){
+		arrUsuarios = new Usus[5];
+		for(int i = 0; i<arrUsuarios.length; i++){
+			arrUsuarios[i] = new Usus("null", "null", 0, "no");
+		}
+	}
+	
 	public boolean Logins(){
 		System.out.print("Ingrese su usuario:\n-");
 		usuIngr = scan.next();
@@ -23,6 +25,7 @@ public class Login {
 				i.logged = "main";
 				return true;
 			}
+			
 		}
 		System.out.println("Usuario o contraseña incorrecta.");
 		return false;
@@ -58,4 +61,66 @@ public class Login {
 			System.out.println("Las contraseñas no coinciden");
 		}
 	}
+	
+	public void CerrarSes(){
+		for(Usus i : arrUsuarios){
+			if(i.logged.equals("main")){
+				i.logged = "no";
+			}
+			
+		}
+	}
+	
+	public void Elim(){
+		System.out.print("--------------------------\n*ESTA SEGURO QUE DESEA ELIMINAR SU CUENTA?*\n1-Si\n2-No\n-");
+		int elimChoice = scan.nextInt();
+		switch(elimChoice){
+			case 1:
+				for(Usus i : arrUsuarios){
+					if(i.logged.equals("main")){
+						i.usuario = "null";
+						i.password = "null";
+						i.rank = 0;
+						i.logged = "no";
+					}
+				}
+				MainPro.inicio.elim = true;
+				break;
+			default:
+				break;
+		}
+		
+	}
+	
+	public void CambiarCont(){
+		
+		System.out.print("Ingrese su vieja contraseña:\n-");
+		passIngr = scan.next();
+		
+		for(Usus i : arrUsuarios){
+			if(i.logged.equals("main") && passIngr.equals(i.password)){
+				System.out.print("Ingrese su nueva contraseña:\n-");
+				nuevoCont = scan.next();
+				System.out.print("Repita su nueva contraseña:\n-");
+				nuevoCont2 = scan.next();
+				if(nuevoCont.equals(nuevoCont2)){
+					i.password = nuevoCont;
+					System.out.println("--------------------------\nContraseña Cambiada!");
+					return;
+				}
+				else{
+					System.out.println("--------------------------\nLas nuevas contraseñas no coinciden");
+					return;
+				}
+			}
+		}
+		System.out.println("Contraseña incorrecta");
+	}
+	
+	public void PrintLogs(){
+		for(Usus i : arrUsuarios){
+				System.out.println("-usu: \"" + i.usuario + "\" -pass: \"" + i.password + "\" -logd: \"" + i.logged + "\"");
+		}
+	}
 }
+

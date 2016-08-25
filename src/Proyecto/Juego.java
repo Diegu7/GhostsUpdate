@@ -12,6 +12,15 @@ public class Juego {
 	
 	int bm = ran.nextInt(2);
 	
+	
+	public void FichasArray(){
+		Fichas arrFichas[] = new Fichas[16];
+		for(int i = 0; i<arrFichas.length; i++){
+			arrFichas[i] = new Fichas(0, 0, true, true, true);
+		}
+	}
+	
+	
 	public void Random(){
 		
 	}
@@ -22,6 +31,7 @@ public class Juego {
 	}
 	
 	public void Juegos(){
+		
 		
 	}
 	

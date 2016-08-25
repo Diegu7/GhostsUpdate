@@ -1,27 +1,30 @@
 package Proyecto;
 
 public class MainPro {
+	public static Start inicio = new Start();
+	public static Login logs = new Login();
+	public static Juego game = new Juego();
+	
 	public static void main(String[] args){
-		Start inicio = new Start();
-		Login ingre = new Login();
+		logs.Array();
+		game.FichasArray();
 		
 		System.out.println("----------Ghosts----------");
-		int opcionInicio = 0;
+		int opcionInicio;
 		do{
 			opcionInicio = inicio.Starts();
 			switch(opcionInicio){
 				case 1:
-					if(ingre.Logins()){									//ingre.Logins es una funcion que devuelve un booleano, true si hizo login, false si fallo
-						int opcionMainMenu = inicio.MainMens();			//el main menu
-						if(opcionMainMenu == 5){
-						}					
+					logs.PrintLogs();
+					if(logs.Logins()){			
+						inicio.MainMens();
 					}
 					break;
 				case 2:
-					ingre.CrearUsu();
+					logs.CrearUsu();
 					break;
 				case 3:
-					System.out.println("Adios :)");						//si elige cerrar el programa el loop se rompe
+					System.out.println("Adios :)");			
 					break;
 				default:
 					System.out.println("Error: Comando no valido");
