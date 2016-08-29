@@ -16,7 +16,7 @@ public class MainPro {
 			switch(opcionInicio){
 				case 1:
 					logs.PrintLogs();
-					if(logs.Logins()){			
+					if(logs.Logins("main")){			
 						inicio.MainMens();
 					}
 					break;

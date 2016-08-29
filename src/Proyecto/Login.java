@@ -14,25 +14,24 @@ public class Login {
 		}
 	}
 	
-	public boolean Logins(){
-		System.out.print("Ingrese su usuario:\n-");
+	public boolean Logins(String tipo){
+		System.out.print("--------------------------\nIngrese su usuario:\n-");
 		usuIngr = scan.next();
 		System.out.print("Ingrese su contraseña:\n-");
 		passIngr = scan.next();
 		
 		for(Usus i : arrUsuarios){
-			if(usuIngr.equals(i.usuario) && passIngr.equals(i.password)){
-				i.logged = "main";
+			if(usuIngr.equals(i.usuario) && passIngr.equals(i.password) && !i.logged.equals("main")){
+				i.logged = tipo;
 				return true;
 			}
-			
 		}
 		System.out.println("Usuario o contraseña incorrecta.");
 		return false;
 	}
 	
 	public void CrearUsu(){
-		System.out.print("Nombre del usuario:\n-");
+		System.out.print("--------------------------\nNombre del usuario:\n-");
 		nuevoUsu = scan.next();
 		
 		for(Usus i : arrUsuarios){
@@ -66,8 +65,7 @@ public class Login {
 		for(Usus i : arrUsuarios){
 			if(i.logged.equals("main")){
 				i.logged = "no";
-			}
-			
+			}	
 		}
 	}
 	
@@ -85,7 +83,6 @@ public class Login {
 					}
 				}
 				MainPro.inicio.elim = true;
-				break;
 			default:
 				break;
 		}
@@ -94,7 +91,7 @@ public class Login {
 	
 	public void CambiarCont(){
 		
-		System.out.print("Ingrese su vieja contraseña:\n-");
+		System.out.print("--------------------------\nIngrese su vieja contraseña:\n-");
 		passIngr = scan.next();
 		
 		for(Usus i : arrUsuarios){
@@ -106,16 +103,16 @@ public class Login {
 				if(nuevoCont.equals(nuevoCont2)){
 					i.password = nuevoCont;
 					System.out.println("--------------------------\nContraseña Cambiada!");
-					return;
 				}
 				else{
 					System.out.println("--------------------------\nLas nuevas contraseñas no coinciden");
-					return;
 				}
+				return;
 			}
 		}
-		System.out.println("Contraseña incorrecta");
+		System.out.println("--------------------------\nContraseña incorrecta");
 	}
+
 	
 	public void PrintLogs(){
 		for(Usus i : arrUsuarios){

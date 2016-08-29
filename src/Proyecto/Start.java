@@ -3,8 +3,8 @@ import java.util.Scanner;
 
 public class Start {
 	Scanner scan = new Scanner(System.in);
-	int dificultad = 1;
-	boolean modoDeJuegoRandom = true;
+	int dificultad = 3;
+	boolean modoDeJuegoRandom = false;
 	boolean elim = false;
 	
 	
@@ -26,6 +26,8 @@ public class Start {
 					Configuracion();
 					break;
 				case 3:
+					MainPro.logs.PrintLogs();
+					MainPro.game.PrintFichas();
 					Reportes();
 					break;
 				case 4:
@@ -129,7 +131,7 @@ public class Start {
 					Datos();
 					break;
 				case 2:
-					CambiarContra();
+					MainPro.logs.CambiarCont();
 					break;
 				case 3:
 					MainPro.logs.Elim();
@@ -163,8 +165,6 @@ public class Start {
 		}
 	}
 	
-	public void CambiarContra(){
-		MainPro.logs.CambiarCont();
-	}
+	
 	
 }
