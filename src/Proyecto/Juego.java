@@ -15,10 +15,12 @@ public class Juego {
 	
 	int fichasVivas = 0;
 	boolean repeat = true;
-	boolean ongoing = true;
 	boolean currentPlayer = true;
 	String player1 = "";
 	String player2 = "";
+	String arriba, abajo, izquierda, derecha;
+	boolean barriba, babajo, bizquierda, bderecha, ongoing;
+	
 	
 	public void FichasArray(){
 		arrFichas = new Fichas[16];
@@ -50,11 +52,11 @@ public class Juego {
 	
 	
 	public void Juegos(){
-		
 		System.out.println("--------------------------\nPLAYER 2");
 		if(!MainPro.logs.Logins("p2")){
 			return;
 		}
+		ongoing = true;
 		SetSettings();
 		for(Usus i : MainPro.logs.arrUsuarios){
 			if(i.logged.equals("main")){
@@ -68,33 +70,82 @@ public class Juego {
 		int icorx, icory;
 		while(ongoing){
 			String currentP;
+			arriba = "no disponible";
+			abajo = "no disponible";
+			izquierda = "no disponible";
+			derecha = "no disponible";
+			barriba = false;
+			babajo = false;
+			bizquierda = false;
+			bderecha = false;
+			boolean movio = false;
 			int lowlim, maxlim;
+			char friend;
 			if(currentPlayer){
 				currentP = player1;
-				lowlim = 0;
-				maxlim = 8;
+				lowlim = 8;
+				maxlim = 16;
+				friend = 'A';
 			}
 			else{
 				currentP = player2;
-				lowlim = 8;
-				maxlim = 16;
+				lowlim = 0;
+				maxlim = 8;
+				friend = 'B';
 			}
-			System.out.println("TURNO de " + currentP);
+			PrintBoard();
+			System.out.println("-TURNO de " + currentP + " -FICHAS: " + friend);
 			System.out.print("Ingrese la coordenada X de la pieza que desea mover: ");
 			icorx = scan.nextInt();
 			System.out.print("Ingrese la coordenada Y de la pieza que desea mover: ");
 			icory = scan.nextInt();
 			for(int i = lowlim; i<maxlim; i++){
-				if(arrFichas[i].status && arrFichas[i].corx == icorx && arrFichas[i].cory == icory){
-					System.out.println("-Donde desea mover?-");
-					//fuck no se que hacer
-				}
+				if(arrFichas[i].status){
+					if(arrFichas[i].corx == icorx && arrFichas[i].cory == icory){
+						System.out.println("-Donde desea mover?-");
+						int movi = Movement(arrFichas[i].corx, arrFichas[i].cory, friend);
+						switch(movi){
+							case 1:
+								if(barriba){
+									arrFichas[i].cory--;
+									movio = true;
+									break;
+								}
+								break;
+							case 2:
+								if(babajo){
+									arrFichas[i].cory++;
+									movio = true;
+									break;
+								}
+								break;
+							case 3:
+								if(bizquierda){
+									arrFichas[i].corx--;
+									movio = true;
+									break;
+								}
+								break;
+							case 4:
+								if(bderecha){
+								arrFichas[i].corx++;
+								movio = true;
+								break;
+								}
+								break;
+							case 5:
+								return;
+						}
+						PlacePieces();
+					}
+				}	
 			}
-			
+			if(movio){
+				currentPlayer = !currentPlayer;
+				continue;
+			}
+			System.out.println("Movimiento invalido - repita");
 		}
-		
-		PrintBoard();
-		
 	}
 	
 	public void RandSpawn(){
@@ -135,12 +186,21 @@ public class Juego {
 	}
 			
 	public void PlacePieces(){
-		for(Fichas i : arrFichas){
-			if(i.status){
-				arrBoard[i.corx][i.cory] = 'G';
-			}
-			else{
-				arrBoard[i.corx][i.cory] = '_';
+		
+		for(int x = 0; x<arrBoard[0].length; x++){
+			for(int y = 0; y<arrBoard[1].length; y++){
+				boolean found = false;
+				for(Fichas i : arrFichas){
+					if(i.status){
+						if(i.corx == x && i.cory == y){
+							arrBoard[x][y] = i.player ? 'A' : 'B';
+							found = true;
+						}
+					}
+				}
+				if(!found){
+					arrBoard[x][y] = '_';
+				}
 			}
 		}
 	}
@@ -199,13 +259,13 @@ public class Juego {
 				int ingr;
 				for(Fichas i : arrFichas){
 					if(i.player && i.status){
-						System.out.println("~Player 1 ~ Fantasma en coordeanada (" + i.corx + "," + i.cory + ")");
+						System.out.println("~ Player 1 ~ Fantasma en coordeanada (" + i.corx + "," + i.cory + ")");
 						System.out.print("Decidir afinidad:\n1-Bueno\n2-Malo\n-");
 						ingr = scan.nextInt();
 						i.afinidad = ingr == 1;
 					}
 					else if(i.status){
-						System.out.println("~Player 2 ~ Fantasma en coordeanada (" + i.corx + "," + i.cory + ")");
+						System.out.println("~ Player 2 ~ Fantasma en coordeanada (" + i.corx + "," + i.cory + ")");
 						System.out.print("Decidir afinidad:\n1-Bueno\n2-Malo\n-");
 						ingr = scan.nextInt();
 						i.afinidad = ingr == 1;
@@ -238,10 +298,36 @@ public class Juego {
 		}
 	}
 	
+	public int Movement(int mcorx, int mcory, char fre){
+		for(int x = 0; x<arrBoard[0].length; x++){
+			for(int y = 0; y<arrBoard[1].length; y++){
+				if(mcorx == x && mcory - 1 == y && arrBoard[x][y] != fre){
+					arriba = "ARRIBA";
+					barriba = true;
+				}
+				if(mcorx == x && mcory + 1 == y && arrBoard[x][y] != fre){
+					abajo = "ABAJO";
+					babajo = true;
+				}
+				if(mcorx - 1 == x && mcory == y && arrBoard[x][y] != fre){
+					izquierda = "IZQUIERDA";
+					bizquierda = true;
+				}
+				if(mcorx + 1 == x && mcory == y && arrBoard[x][y] != fre){
+					derecha = "DERECHA";
+					bderecha = true;
+				}
+			}
+		}
+		System.out.print("1-" + arriba + "\n2-" + abajo + "\n3-" + izquierda + "\n4-" + derecha + "\n5-Conceder el juego\n-");
+		return scan.nextInt();
+	}
+	
 	public void PrintFichas(){
-		for(Fichas i : arrFichas){
-			if(i.status){
-				System.out.println("-corx,cory: " + i.corx + "," + i.cory + " -player: " + i.player + " -afinidad: " + i.afinidad);
+		for(int i = 0; i<arrFichas.length; i++){
+			if(arrFichas[i].status){
+				System.out.println(i + "-corx,cory: " + arrFichas[i].corx + ", " + arrFichas[i].cory + 
+						" -player: " + arrFichas[i].player + " -afinidad: " + arrFichas[i].afinidad);
 			}
 		}
 	}

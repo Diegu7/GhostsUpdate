@@ -3,8 +3,8 @@ import java.util.Scanner;
 
 public class Start {
 	Scanner scan = new Scanner(System.in);
-	int dificultad = 3;
-	boolean modoDeJuegoRandom = false;
+	int dificultad = 1;
+	boolean modoDeJuegoRandom = true;
 	boolean elim = false;
 	
 	
