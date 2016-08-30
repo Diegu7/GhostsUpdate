@@ -12,6 +12,9 @@ public class Login {
 		for(int i = 0; i<arrUsuarios.length; i++){
 			arrUsuarios[i] = new Usus("null", "null", 0, "no");
 		}
+		arrUsuarios[0] = new Usus("dego", "dego", 5, "no");
+		arrUsuarios[1] = new Usus("ivan", "ivan", 5, "no");
+		arrUsuarios[2] = new Usus("raul", "raul", 5, "no");
 	}
 	
 	public boolean Logins(String tipo){
