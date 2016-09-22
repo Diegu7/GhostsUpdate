@@ -159,7 +159,7 @@ public class Start {
 	}
 	
 	public void Historial(){
-		System.out.println("--------------------------\nHISTORIAL - ULTIMOS 10 JUEGOS\n--------------------------");
+		System.out.println("--------------------------\nHISTORIAL - ULTIMOS " + arrMatch.length + " JUEGOS\n--------------------------");
 		for(Match i : MainPro.inicio.arrMatch){
 			if(i.ganador != null)
 				System.out.println(i.ganador.toUpperCase() + " GANO - " + i.perdedor.toUpperCase() + " " + i.wincond);

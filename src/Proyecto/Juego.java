@@ -392,7 +392,7 @@ public class Juego {
 				loser = i.usuario;
 			}
 		}
-		MainPro.inicio.arrMatch[9] = new Match(winner, loser, wincond, matchCount);
+		MainPro.inicio.arrMatch[MainPro.inicio.arrMatch.length - 1] = new Match(winner, loser, wincond, matchCount);
 		matchCount++;
 		Match aux;
 		for(int i = 1; i < MainPro.inicio.arrMatch.length; i++){
