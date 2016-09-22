@@ -9,4 +9,8 @@ public class Usus {
 		rank = ranks;
 		logged = loggd;
 	}
+	public Usus(){
+		rank = 0;
+		logged = "no";
+	}
 }

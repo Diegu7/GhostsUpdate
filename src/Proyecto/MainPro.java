@@ -8,6 +8,7 @@ public class MainPro {
 	public static void main(String[] args){
 		logs.Array();
 		game.FichasArray();
+		inicio.matchArray();
 		
 		System.out.println("----------Ghosts----------");
 		int opcionInicio;
@@ -15,7 +16,6 @@ public class MainPro {
 			opcionInicio = inicio.Starts();
 			switch(opcionInicio){
 				case 1:
-					logs.PrintLogs();
 					if(logs.Logins("main")){			
 						inicio.MainMens();
 					}

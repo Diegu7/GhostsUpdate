@@ -8,13 +8,13 @@ public class Login {
 	
 	
 	public void Array(){
-		arrUsuarios = new Usus[5];
+		arrUsuarios = new Usus[10];
 		for(int i = 0; i<arrUsuarios.length; i++){
-			arrUsuarios[i] = new Usus("null", "null", 0, "no");
+			arrUsuarios[i] = new Usus();
 		}
 		arrUsuarios[0] = new Usus("dego", "dego", 5, "no");
-		arrUsuarios[1] = new Usus("ivan", "ivan", 5, "no");
-		arrUsuarios[2] = new Usus("raul", "raul", 5, "no");
+		arrUsuarios[1] = new Usus("ivan", "ivan", 6, "no");
+		arrUsuarios[2] = new Usus("raul", "raul", 2, "no");
 	}
 	
 	public boolean Logins(String tipo){
@@ -50,7 +50,7 @@ public class Login {
 		
 		if(nuevoCont.equals(nuevoCont2)){
 			for(Usus i : arrUsuarios){
-				if(i.usuario.equals("null")){
+				if(i.usuario.equals(null)){
 					i.usuario = nuevoUsu;
 					i.password = nuevoCont;
 					System.out.println("Usuario creado exitosamente!");
@@ -64,12 +64,20 @@ public class Login {
 		}
 	}
 	
-	public void CerrarSes(){
-		for(Usus i : arrUsuarios){
-			if(i.logged.equals("main")){
+	public void CerrarSes(boolean todos){
+		if(todos){
+			for(Usus i : arrUsuarios){
 				i.logged = "no";
-			}	
+			}
 		}
+		else{
+			for(Usus i : arrUsuarios){
+				if(i.logged.equals("p2"))
+					i.logged = "no";
+			}
+		}
+		
+		
 	}
 	
 	public void Elim(){
@@ -79,11 +87,11 @@ public class Login {
 			case 1:
 				for(Usus i : arrUsuarios){
 					if(i.logged.equals("main")){
-						i.usuario = "null";
-						i.password = "null";
+						i.usuario = null;
+						i.password = null;
 						i.rank = 0;
-						i.logged = "no";
 					}
+					i.logged = "no";
 				}
 				MainPro.inicio.elim = true;
 			default:
@@ -116,10 +124,9 @@ public class Login {
 		System.out.println("--------------------------\nContraseña incorrecta");
 	}
 
-	
 	public void PrintLogs(){
 		for(Usus i : arrUsuarios){
-				System.out.println("-usu: \"" + i.usuario + "\" -pass: \"" + i.password + "\" -logd: \"" + i.logged + "\"");
+				System.out.println("-usu: \"" + i.usuario + "\" -pass: \"" + i.password + "\" -logd: \"" + i.logged + "\" -rank: " + i.rank);
 		}
 	}
 }

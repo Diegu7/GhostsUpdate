@@ -6,7 +6,14 @@ public class Start {
 	int dificultad = 1;
 	boolean modoDeJuegoRandom = true;
 	boolean elim = false;
+	Match arrMatch[];
 	
+	public void matchArray(){
+		arrMatch = new Match[10];
+		for(int i = 0; i<arrMatch.length; i++){
+			arrMatch[i] = new Match(0);
+		}
+	}
 	
 	public int Starts(){
 		System.out.print("--------------------------\n1- Login\n2- Crear Jugador\n3- Salir\n-");
@@ -26,8 +33,6 @@ public class Start {
 					Configuracion();
 					break;
 				case 3:
-					MainPro.logs.PrintLogs();
-					MainPro.game.PrintFichas();
 					Reportes();
 					break;
 				case 4:
@@ -38,7 +43,7 @@ public class Start {
 					}
 					break;
 				case 5:
-					MainPro.logs.CerrarSes();
+					MainPro.logs.CerrarSes(true);
 					return;
 				default:
 					System.out.println("Error: Comando no valido");
@@ -50,12 +55,13 @@ public class Start {
 	public void Configuracion(){
 		int opcionConfiguracion;
 		do{
-			System.out.print("--------------------------\n1-Dificultad\n2-Modo de Juego\n3-Regresar\n-");
+			System.out.print("--------------------------\n1-Dificultad\n2-Modo de Juego\n3-Creditos :)\n4-Regresar\n-");
 			opcionConfiguracion = scan.nextInt();
 			switch(opcionConfiguracion){
 				case 1:
 					System.out.print("--------------------------\n1-Normal\n2-Experto\n3-Maestro\n-");
 					int opcionDificultad = scan.nextInt();
+					System.out.println("--------------------------");
 					switch(opcionDificultad){
 						case 1:
 							dificultad = 1;
@@ -77,6 +83,7 @@ public class Start {
 				case 2:
 					System.out.print("--------------------------\n1-Aleatorio\n2-Manual\n-");
 					int opcionModo = scan.nextInt();
+					System.out.println("--------------------------");
 					switch(opcionModo){
 						case 1:
 							modoDeJuegoRandom = true;
@@ -91,7 +98,10 @@ public class Start {
 							break;
 					}
 					break;
-				case 3: 
+				case 3:
+					System.out.println("----------Ghosts----------\n-----------Devs-----------\n-Diego Montes\n-Ivan Carcamos\n"
+							+ "-Raul Alcantara\n------Special Thanks------\n-Kamil Segebre\n-Jonathan Salazar");
+				case 4: 
 					return;
 				default:
 					System.out.println("Error: Comando no valido");
@@ -149,11 +159,29 @@ public class Start {
 	}
 	
 	public void Historial(){
-		System.out.println("--------------------------\nPROXIMAMENTE");
+		System.out.println("--------------------------\nHISTORIAL - ULTIMOS 10 JUEGOS\n--------------------------");
+		for(Match i : MainPro.inicio.arrMatch){
+			if(i.ganador != null)
+				System.out.println(i.ganador.toUpperCase() + " GANO - " + i.perdedor.toUpperCase() + " " + i.wincond);
+		}
 	}
 	
 	public void Ranking(){
-		System.out.println("--------------------------\nPROXIMAMENTE");
+		Usus aux;
+		for(int i = 1; i < MainPro.logs.arrUsuarios.length; i++){
+			for(int j = 0; j < MainPro.logs.arrUsuarios.length - i; j++){
+				if(MainPro.logs.arrUsuarios[j].rank < MainPro.logs.arrUsuarios[j+1].rank){
+					aux = MainPro.logs.arrUsuarios[j];
+					MainPro.logs.arrUsuarios[j] = MainPro.logs.arrUsuarios[j+1];
+					MainPro.logs.arrUsuarios[j+1] = aux;
+				}
+			}
+		}
+		System.out.println("--------------------------\nRANKING\n--------------------------");
+		for(Usus i : MainPro.logs.arrUsuarios){
+			if(i.usuario != null)
+				System.out.println(i.usuario.toUpperCase() + " - Rank: " + i.rank);
+		}
 	}
 	
 	public void Datos(){

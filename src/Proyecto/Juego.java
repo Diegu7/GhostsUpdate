@@ -7,31 +7,36 @@ import java.util.Random;
 
 public class Juego {
 	Scanner scan = new Scanner(System.in);
-	Random ran = new Random();					//aqui fue donde iba a intentar programar el juego y me rendi
-	Login logs = new Login();
+	Random ran = new Random();					
 	
 	char arrBoard[][];
 	Fichas arrFichas[];
 	
-	int fichasVivas = 0;
+	int lowlim = 0, maxlim = 0, lowp2 = 0, maxp2 = 0;
+	int nposx, nposy;
+	int wcory = 0;
+	int matchCount = 1;
 	boolean repeat = true;
 	boolean currentPlayer = true;
+	boolean whowon;
 	String player1 = "";
 	String player2 = "";
 	String arriba, abajo, izquierda, derecha;
+	String currentP, idleP;
+	String wincond, winner, loser;
 	boolean barriba, babajo, bizquierda, bderecha, ongoing;
 	
 	
 	public void FichasArray(){
 		arrFichas = new Fichas[16];
 		for(int i = 0; i<arrFichas.length/2; i++){
-			arrFichas[i] = new Fichas(0, 0, false, true, true);
+			arrFichas[i] = new Fichas(-1, -1, false, true, true);
 			if(i%2 == 0){
 				arrFichas[i].afinidad = false;
 			}
 		}
 		for(int i = arrFichas.length/2; i<arrFichas.length; i++){
-			arrFichas[i] = new Fichas(0 , 0, true, true, true);
+			arrFichas[i] = new Fichas(-1 , -1, true, true, true);
 			if(i%2 == 0){
 				arrFichas[i].afinidad = false;
 			}
@@ -42,11 +47,6 @@ public class Juego {
 				arrBoard[x][y] = '_';
 			}
 		}
-		for(Fichas i : arrFichas){
-			if(i.status){
-				fichasVivas = fichasVivas + 1;
-			}
-		}	
 	}
 	
 	
@@ -69,32 +69,33 @@ public class Juego {
 		currentPlayer = true;
 		int icorx, icory;
 		while(ongoing){
-			String currentP;
 			arriba = "no disponible";
 			abajo = "no disponible";
 			izquierda = "no disponible";
 			derecha = "no disponible";
-			barriba = false;
-			babajo = false;
-			bizquierda = false;
-			bderecha = false;
+			nposx = -1; nposy = -1;
 			boolean movio = false;
-			int lowlim, maxlim;
 			char friend;
 			if(currentPlayer){
 				currentP = player1;
 				lowlim = 8;
 				maxlim = 16;
+				lowp2 = 0;
+				maxp2 = 8;
+				wcory = 0;
 				friend = 'A';
 			}
 			else{
 				currentP = player2;
 				lowlim = 0;
 				maxlim = 8;
+				lowp2 = 8;
+				maxp2 = 16;
+				wcory = 5;
 				friend = 'B';
 			}
 			PrintBoard();
-			System.out.println("-TURNO de " + currentP + " -FICHAS: " + friend);
+			System.out.println("-Turno de " + currentP.toUpperCase() + " - FICHAS: " + friend);
 			System.out.print("Ingrese la coordenada X de la pieza que desea mover: ");
 			icorx = scan.nextInt();
 			System.out.print("Ingrese la coordenada Y de la pieza que desea mover: ");
@@ -103,44 +104,54 @@ public class Juego {
 				if(arrFichas[i].status){
 					if(arrFichas[i].corx == icorx && arrFichas[i].cory == icory){
 						System.out.println("-Donde desea mover?-");
-						int movi = Movement(arrFichas[i].corx, arrFichas[i].cory, friend);
-						switch(movi){
+						switch(Movement(arrFichas[i].corx, arrFichas[i].cory, friend)){
 							case 1:
-								if(barriba){
+								if(arriba.equals("ARRIBA")){
 									arrFichas[i].cory--;
 									movio = true;
-									break;
 								}
 								break;
 							case 2:
-								if(babajo){
+								if(abajo.equals("ABAJO")){
 									arrFichas[i].cory++;
 									movio = true;
-									break;
 								}
 								break;
 							case 3:
-								if(bizquierda){
+								if(izquierda.equals("IZQUIERDA")){
 									arrFichas[i].corx--;
 									movio = true;
-									break;
 								}
 								break;
 							case 4:
-								if(bderecha){
-								arrFichas[i].corx++;
-								movio = true;
-								break;
+								if(derecha.equals("DERECHA")){
+									arrFichas[i].corx++;
+									movio = true;
 								}
 								break;
 							case 5:
+								wincond = "CONCEDIO";
+								printWinner();
+								saveFosforo();
+								MainPro.logs.CerrarSes(false);
 								return;
 						}
+						nposx = arrFichas[i].corx;
+						nposy = arrFichas[i].cory;
 						PlacePieces();
 					}
 				}	
 			}
 			if(movio){
+				//check stuff
+				checkOverlaps();
+				if(checkWinConditions()){
+					wincond = "PERDIO";
+					printWinner();
+					saveFosforo();
+					MainPro.logs.CerrarSes(false);
+					return;
+				}
 				currentPlayer = !currentPlayer;
 				continue;
 			}
@@ -214,25 +225,39 @@ public class Juego {
 			}
 			System.out.print("\n");
 		}
+		System.out.println("--------------------------");
 	}
 	
 	public void SetSettings(){
 		switch(MainPro.inicio.dificultad){
 			case 2:
+				for(int i = 0; i<4; i++){
+					arrFichas[i].status = true;
+				}
 				for(int i = 4; i<8; i++){
 					arrFichas[i].status = false;
+				}
+				for(int i = 8; i<12; i++){
+					arrFichas[i].status = true;
 				}
 				for(int i = 12; i<16; i++){
 					arrFichas[i].status = false;
 				}
 				break;
 			case 3:
+				for(int i = 0; i<2; i++){
+					arrFichas[i].status = true;
+				}
 				for(int i = 2; i<8; i++){
 					arrFichas[i].status = false;
+				}
+				for(int i = 8; i<10; i++){
+					arrFichas[i].status = true;
 				}
 				for(int i = 10; i<16; i++){
 					arrFichas[i].status = false;
 				}
+				
 				break;
 			default:
 				for(Fichas i : arrFichas){
@@ -303,24 +328,95 @@ public class Juego {
 			for(int y = 0; y<arrBoard[1].length; y++){
 				if(mcorx == x && mcory - 1 == y && arrBoard[x][y] != fre){
 					arriba = "ARRIBA";
-					barriba = true;
 				}
 				if(mcorx == x && mcory + 1 == y && arrBoard[x][y] != fre){
 					abajo = "ABAJO";
-					babajo = true;
 				}
 				if(mcorx - 1 == x && mcory == y && arrBoard[x][y] != fre){
 					izquierda = "IZQUIERDA";
-					bizquierda = true;
 				}
 				if(mcorx + 1 == x && mcory == y && arrBoard[x][y] != fre){
 					derecha = "DERECHA";
-					bderecha = true;
 				}
 			}
 		}
 		System.out.print("1-" + arriba + "\n2-" + abajo + "\n3-" + izquierda + "\n4-" + derecha + "\n5-Conceder el juego\n-");
 		return scan.nextInt();
+	}
+	
+	public void checkOverlaps(){
+		for(int i = lowp2; i<maxp2; i++){
+			if(arrFichas[i].status && nposx == arrFichas[i].corx && nposy == arrFichas[i].cory){
+				arrFichas[i].status = false;
+				String afin = arrFichas[i].afinidad ? "BUENA" : "MALA";
+				String oponente = !currentPlayer ? player1 : player2;
+				System.out.println("--------------------------\nHa muerto una ficha " + afin + " del jugador " + oponente.toUpperCase());
+			}
+		}
+	}
+	
+	public boolean checkWinConditions(){
+		int buenas = 0, malas = 0;
+		for(int i = lowp2; i<maxp2; i++){
+			if(arrFichas[i].status && arrFichas[i].afinidad)
+				buenas++;
+			if(arrFichas[i].status && !arrFichas[i].afinidad)
+				malas++;
+		}
+		if(buenas == 0){
+			whowon = true;
+			return true;
+		}
+		if(malas == 0){
+			whowon = false;
+			return true;
+		}
+		for(int i = lowlim; i<maxlim; i++){
+			boolean checkcorx = arrFichas[i].corx == 0 || arrFichas[i].corx == 5;
+			if(arrFichas[i].afinidad && checkcorx && arrFichas[i].cory == wcory){
+				whowon = true;
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public void saveFosforo(){
+		String wins = whowon ? currentPlayer ? "main" : "p2" : !currentPlayer ? "main" : "p2";
+		String loss = !whowon ? currentPlayer ? "main" : "p2" : !currentPlayer ? "main" : "p2";
+		for(Usus i : MainPro.logs.arrUsuarios){
+			if(i.logged.equals(wins)){
+				winner = i.usuario;
+			}
+			if(i.logged.equals(loss)){
+				loser = i.usuario;
+			}
+		}
+		MainPro.inicio.arrMatch[9] = new Match(winner, loser, wincond, matchCount);
+		matchCount++;
+		Match aux;
+		for(int i = 1; i < MainPro.inicio.arrMatch.length; i++){
+			for(int j = 0; j < MainPro.inicio.arrMatch.length - i; j++){
+				if(MainPro.inicio.arrMatch[j].num < MainPro.inicio.arrMatch[j+1].num){
+					aux = MainPro.inicio.arrMatch[j];
+					MainPro.inicio.arrMatch[j] = MainPro.inicio.arrMatch[j+1];
+					MainPro.inicio.arrMatch[j+1] = aux;
+				}
+			}
+		}
+	}
+	
+	public void printWinner(){
+		String wins = whowon ? currentPlayer ? "main" : "p2" : !currentPlayer ? "main" : "p2";
+		for(Usus i : MainPro.logs.arrUsuarios){
+			if(i.logged.equals(wins)){
+				System.out.println("--------------------------\nFELICIDADES " + i.usuario.toUpperCase() + ", HAS GANADO EL JUEGO");
+				int rankp = i.rank;
+				i.rank = i.rank + 3;
+				System.out.println("--------------------------\nSe te ha otorgado +3 de ranking!\nRanking previo: " + rankp 
+						+ "\nNuevo ranking: " + i.rank);
+			}
+		}
 	}
 	
 	public void PrintFichas(){
